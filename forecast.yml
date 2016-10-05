@@ -1,0 +1,30 @@
+logging:
+  level: ERROR
+  loggers:
+    gov.nist.forecast.fhir: TRACE
+    io.dropwizard: ERROR
+    timeZone: UTC
+server:
+  adminMinThreads: 1
+  adminMaxThreads: 64
+  adminContextPath: /admin
+  applicationContextPath: /*
+  applicationConnectors:
+    - type: http
+      port: 8080
+    - type: https
+      port: 8443
+      keyStorePath: example.keystore
+      keyStorePassword: example
+      validateCerts: false
+      validatePeers: false
+  adminConnectors:
+    - type: http
+      port: 8081
+    - type: https
+      port: 8444
+      keyStorePath: example.keystore
+      keyStorePassword: example
+      validateCerts: false
+      validatePeers: false
+      
