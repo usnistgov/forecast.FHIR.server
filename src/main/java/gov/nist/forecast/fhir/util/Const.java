@@ -1,8 +1,12 @@
 package gov.nist.forecast.fhir.util;
 
+import java.text.SimpleDateFormat;
+
 import org.tch.fc.model.Service;
 
 public abstract class Const {
+
+	public static SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 
 	public enum RESPONSE_CODE {
 		

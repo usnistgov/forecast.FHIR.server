@@ -1,14 +1,24 @@
 package gov.nist.forecast.fhir;
 
+import org.eclipse.emf.ecore.EObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import fhir.Conformance;
-import gov.nist.forecast.fhir.resources.FHIRMessageWriter;
+import com.fasterxml.jackson.databind.SerializationFeature;
+
+import fhir.impl.ElementImpl;
+import fhir.impl.ParametersImpl;
+import gov.nist.forecast.fhir.resources.EMFModule;
+import gov.nist.forecast.fhir.resources.FHIRXMLReader;
+import gov.nist.forecast.fhir.resources.FHIRXMLWriter;
 import gov.nist.forecast.fhir.resources.IndexResource;
+import gov.nist.forecast.fhir.util.ElementMixin;
+import gov.nist.forecast.fhir.util.ParametersMixin;
+import gov.nist.forecast.fhir.util.TheClassMixin;
 import io.dropwizard.Application;
 import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
+import try_.TheClass;
 
 public class ForecastApplication extends Application<ForecastConfiguration> {
 
@@ -26,8 +36,15 @@ public class ForecastApplication extends Application<ForecastConfiguration> {
 		log.trace("run==>");
 				
 		environment.jersey().register(
-				new IndexResource());
-		environment.jersey().getResourceConfig().register(new FHIRMessageWriter<Conformance>());		
+				new IndexResource(configuration.getForcasters()));
+		// We have to register our XML serializer and deserializer with jersey. 
+		environment.jersey().getResourceConfig().register(new FHIRXMLReader<EObject>());		
+		environment.jersey().getResourceConfig().register(new FHIRXMLWriter<EObject>());		
+		environment.getObjectMapper().configure(SerializationFeature.WRITE_NULL_MAP_VALUES, false);
+		environment.getObjectMapper().configure(SerializationFeature.WRITE_EMPTY_JSON_ARRAYS, false);
+//		environment.getObjectMapper().addMixIn(TheClass.class, TheClassMixin.class);
+//		environment.getObjectMapper().addMixIn(ElementImpl.class, ElementMixin.class);
+//		environment.getObjectMapper().addMixIn(ParametersImpl.class, ParametersMixin.class);
 		log.trace("<==run");
 	}
 

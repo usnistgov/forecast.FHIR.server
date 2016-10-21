@@ -24,24 +24,29 @@ import org.slf4j.LoggerFactory;
 import fhir.FhirPackage;
 import xhtml.XhtmlPackage;
 
-@Provider
+// This class is required to get XML serialization done the EMF way.
+// All EMF object are EObjects.
 @Produces(MediaType.APPLICATION_XML)
-public class FHIRMessageWriter<Conformance> implements MessageBodyWriter<Conformance> {
+public class FHIRXMLWriter<T extends EObject> implements MessageBodyWriter<T> {
 	
-	Logger log = LoggerFactory.getLogger(FHIRMessageWriter.class);
+	Logger log = LoggerFactory.getLogger(FHIRXMLWriter.class);
 
 	protected static ResourceSet resourceSet = new ResourceSetImpl();
 	protected static Resource resource;
 
+	
 	static {
+		// We must register these packages.
 		FhirPackage.eINSTANCE.eClass();
 		XhtmlPackage.eINSTANCE.eClass();
+		
 		resourceSet.getResourceFactoryRegistry().getExtensionToFactoryMap().put("xml", new XMLResourceFactoryImpl());
+		// We are not writing to a file so we create a dummy URI.
 		resource = resourceSet.createResource(URI.createURI("xxx.xml"));
 	}
 
 	@Override
-	public long getSize(Conformance arg0, Class<?> arg1, Type arg2, Annotation[] arg3, MediaType arg4) {
+	public long getSize(T arg0, Class<?> arg1, Type arg2, Annotation[] arg3, MediaType arg4) {
 		return 0;
 	}
 
@@ -51,17 +56,16 @@ public class FHIRMessageWriter<Conformance> implements MessageBodyWriter<Conform
 	}
 
 	@Override
-	public void writeTo(Conformance ir, Class<?> clazz, Type type, Annotation[] ann, MediaType mt,
+	public void writeTo(T eObject, Class<?> clazz, Type type, Annotation[] ann, MediaType mt,
 			MultivaluedMap<String, Object> mvm, java.io.OutputStream stream)
 			throws IOException, WebApplicationException {
 		log.trace("writeTo==>");
-		resource.getContents().add((EObject) ir);
+		resource.getContents().add((EObject) eObject);
 
 		try {
 			resource.save(stream, Collections.EMPTY_MAP);
 		} catch (IOException e) {
-			e.printStackTrace();
+			log.error("", e);
 		}
-
 	}
 }

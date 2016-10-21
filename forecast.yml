@@ -4,6 +4,11 @@ logging:
     gov.nist.forecast.fhir: TRACE
     io.dropwizard: ERROR
     timeZone: UTC
+forecasters:
+  tch: http://tchforecasttester.org/fv/forecast
+  swp: http://xxx
+  stc: http://test-cdsi.rhcloud.com/CDSi/forecast
+  ice: http://imm.pagekite.me/ice/evaluate
 server:
   adminMinThreads: 1
   adminMaxThreads: 64

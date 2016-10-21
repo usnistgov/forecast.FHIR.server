@@ -7,7 +7,7 @@ apply plugin: 'gradle-one-jar'
 sourceCompatibility = 1.8
 version = '1.0'
 
-group 'gov.nist.fhir.cdsi'
+group 'gov.nist.fhir.forecast'
 
 buildscript {
     repositories {
@@ -20,13 +20,10 @@ buildscript {
 
 jar {
     manifest {
-        attributes 'Implementation-Title': 'CDSi FHIR Server',
+        attributes 'Implementation-Title': 'Forecast FHIR Server',
                    'Implementation-Version': version
     }
 }
-
-group 'gov.nist.cdsi.fhir'
-
 
 defaultTasks 'run'
 mainClassName = 'gov.nist.forecast.fhir.ForecastApplication'
@@ -67,16 +64,11 @@ dependencies {
 compile group: 'javax.servlet', name: 'javax.servlet-api', version: '3.1.0'
 	// DropWizard
 	compile 'io.dropwizard:dropwizard-core:' + vDW
-//	compile 'io.dropwizard:dropwizard-assets:' + vDW
-//	compile 'io.dropwizard:dropwizard-auth:' + vDW
-//	compile 'io.dropwizard:dropwizard-hibernate:' + vDW
 	compile 'io.dropwizard:dropwizard-jdbi:' + vDW
-//	compile 'io.dropwizard:dropwizard-migrations:' + vDW
-//	compile 'io.dropwizard:dropwizard-spdy:' + vDW
-	
+
 	// FHIR
-//	compile 'gov.nist.fhir.emf:fhir.emf:1.0'
-	compile 'gov.nist.fhir.forecast:fhir.forecast:1.1'
+//	compile 'gov.nist.fhir.forecast:fhir.forecast:1.4'
+	compile project(':fhir.forecast')
 	
 	// Logging
 	compile 'org.slf4j:slf4j-api:' + vlogslf4j
@@ -89,7 +81,7 @@ compile group: 'javax.servlet', name: 'javax.servlet-api', version: '3.1.0'
 	compile 'org.eclipse.emf:org.eclipse.emf.ecore:2.12.0'
 	compile 'org.eclipse.emf:org.eclipse.emf.ecore.xmi:2.12.0'
 	
-	compile 'org.tch.fc:ForecastConnector:3.09'
+	compile 'org.tch.fc:ForecastConnector:3.09.01'
 
 	compile 'javassist:javassist:3.12.1.GA'
 	compile 'javax.activation:activation:1.1.1'
