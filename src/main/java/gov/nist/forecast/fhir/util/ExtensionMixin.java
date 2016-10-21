@@ -1,12 +1,12 @@
 package gov.nist.forecast.fhir.util;
 
+import org.hl7.fhir.Extension;
+import org.hl7.fhir.FhirFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 
-import fhir.Extension;
-import fhir.FhirFactory;
 
 public class ExtensionMixin {
 

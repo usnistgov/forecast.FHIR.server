@@ -4,6 +4,18 @@ import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.hl7.fhir.Bundle;
+import org.hl7.fhir.BundleEntry;
+import org.hl7.fhir.BundleType;
+import org.hl7.fhir.BundleTypeList;
+import org.hl7.fhir.DateTime;
+import org.hl7.fhir.FhirFactory;
+import org.hl7.fhir.Immunization;
+import org.hl7.fhir.ImmunizationRecommendation;
+import org.hl7.fhir.Parameters;
+import org.hl7.fhir.ParametersParameter;
+import org.hl7.fhir.Patient;
+import org.hl7.fhir.ResourceContainer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.tch.fc.ConnectFactory;
@@ -16,23 +28,8 @@ import org.tch.fc.model.TestCase;
 import org.tch.fc.model.TestEvent;
 import org.tch.fc.model.VaccineGroup;
 
-import fhir.Bundle;
-import fhir.BundleEntry;
-import fhir.BundleType;
-import fhir.BundleTypeList;
-import fhir.DateTime;
-import fhir.FhirFactory;
-import fhir.Immunization;
-import fhir.Parameters;
-import fhir.ParametersParameter;
-import fhir.ResourceContainer;
 import fhir.util.FHIRUtil;
-import forecast.ForecastImmunizationRecommendation;
-import forecast.ForecastPatient;
 import forecast.util.ForecastUtil;
-import gov.nist.forecast.fhir.exceptions.ForecastException;
-import gov.nist.forecast.fhir.exceptions.ForecastExceptionMapper;
-import gov.nist.forecast.fhir.util.Const;
 
 public class ImmunizationRecommendationService {
 
@@ -55,22 +52,23 @@ public class ImmunizationRecommendationService {
 		software.setService(service);
 
 		TestCase testCase = new TestCase();
-		ForecastPatient patient = findPatient(parameters);
+		Patient patient = findPatient(parameters);
 		try {
-			ParametersParameter ppAssessment = findParametersParameter(ForecastUtil.FORECAST_PARAMETERs.ASSESMENT_DATE.code,
-					parameters);
+			ParametersParameter ppAssessment = findParametersParameter(
+					ForecastUtil.FORECAST_PARAMETERs.ASSESMENT_DATE.code, parameters);
 			testCase.setEvalDate(FHIRUtil.convert(ppAssessment.getValueDate()));
-			ParametersParameter ppBirthDate = findParametersParameter(ForecastUtil.FORECAST_PARAMETERs.BIRTH_DATE.code, parameters);
+			ParametersParameter ppBirthDate = findParametersParameter(ForecastUtil.FORECAST_PARAMETERs.BIRTH_DATE.code,
+					parameters);
 			testCase.setPatientDob(FHIRUtil.convert(ppBirthDate.getValueDate()));
 		} catch (ParseException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
-		ParametersParameter ppGender = findParametersParameter(ForecastUtil.FORECAST_PARAMETERs.GENDER.code, parameters);
+		ParametersParameter ppGender = findParametersParameter(ForecastUtil.FORECAST_PARAMETERs.GENDER.code,
+				parameters);
 		testCase.setPatientSex(ppGender.getValueString().toString());
 		List<TestEvent> events = createTestEvents(parameters);
 		testCase.setTestEventList(events);
-//		ForecastUtil.createForecastPatient(testCase);
 		ConnectorInterface connector = null;
 		try {
 			connector = ConnectFactory.createConnecter(software, VaccineGroup.getForecastItemList());
@@ -80,25 +78,16 @@ public class ImmunizationRecommendationService {
 			for (ForecastActual forecastActual : forecastActualList) {
 				log.trace(ForecastUtil.forecastToString(forecastActual));
 				log.trace(ForecastUtil.testEventsToString(events));
-				 ForecastImmunizationRecommendation recommendation =
-				 ForecastUtil.createForecastImmunizationRecommendation(forecastActual, patient, events);
-				 BundleEntry entry =
-				 FhirFactory.eINSTANCE.createBundleEntry();
-				 entry.setId(recommendation.getIdentifier().get(0).toString());
-				 entry.setFullUrl(recommendation.getImplicitRules());
-				 ResourceContainer container =
-				 FhirFactory.eINSTANCE.createResourceContainer();
-				 container.setImmunizationRecommendation(recommendation);
-				 entry.setResource(container);
-				 bundle.getEntry().add(entry);
+				ImmunizationRecommendation recommendation = ForecastUtil
+						.createForecastImmunizationRecommendation(forecastActual, patient, events);
+				BundleEntry entry = FhirFactory.eINSTANCE.createBundleEntry();
+				entry.setId(recommendation.getIdentifier().get(0).toString());
+				entry.setFullUrl(recommendation.getImplicitRules());
+				ResourceContainer container = FhirFactory.eINSTANCE.createResourceContainer();
+				container.setImmunizationRecommendation(recommendation);
+				entry.setResource(container);
+				bundle.getEntry().add(entry);
 			}
-//			BundleEntry entry = FhirFactory.eINSTANCE.createBundleEntry();
-//			entry.setId(patient.getIdentifier().get(0).getId());
-//			entry.setFullUrl(patient.getImplicitRules());
-//			ResourceContainer container = FhirFactory.eINSTANCE.createResourceContainer();
-//			container.setPatient(patient);
-//			entry.setResource(container);
-//			bundle.getEntry().add(entry);
 
 		} catch (Exception e) {
 			log.error("", e);
@@ -106,11 +95,10 @@ public class ImmunizationRecommendationService {
 
 		return bundle;
 	}
-	
-	static ForecastPatient findPatient(Parameters parameters) {
+
+	static Patient findPatient(Parameters parameters) {
 		if (parameters.getParameter().size() > 0) {
-			return (ForecastPatient) parameters.getParameter().get(0).getResource().getImmunization()
-				.getPatient();
+			return (Patient) parameters.getParameter().get(0).getResource().getImmunization().getPatient();
 		}
 		return null;
 	}

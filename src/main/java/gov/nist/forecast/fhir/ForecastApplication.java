@@ -6,19 +6,12 @@ import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.databind.SerializationFeature;
 
-import fhir.impl.ElementImpl;
-import fhir.impl.ParametersImpl;
-import gov.nist.forecast.fhir.resources.EMFModule;
 import gov.nist.forecast.fhir.resources.FHIRXMLReader;
 import gov.nist.forecast.fhir.resources.FHIRXMLWriter;
 import gov.nist.forecast.fhir.resources.IndexResource;
-import gov.nist.forecast.fhir.util.ElementMixin;
-import gov.nist.forecast.fhir.util.ParametersMixin;
-import gov.nist.forecast.fhir.util.TheClassMixin;
 import io.dropwizard.Application;
 import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
-import try_.TheClass;
 
 public class ForecastApplication extends Application<ForecastConfiguration> {
 

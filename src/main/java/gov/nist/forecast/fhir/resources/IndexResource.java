@@ -13,16 +13,16 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import org.hl7.fhir.Bundle;
+import org.hl7.fhir.Conformance;
+import org.hl7.fhir.ImplementationGuide;
+import org.hl7.fhir.Parameters;
+import org.hl7.fhir.ParametersParameter;
+import org.hl7.fhir.StructureDefinition;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.tch.fc.model.Service;
 
-import fhir.Bundle;
-import fhir.Conformance;
-import fhir.ImplementationGuide;
-import fhir.Parameters;
-import fhir.ParametersParameter;
-import fhir.StructureDefinition;
 import fhir.util.Load;
 import fhir.util.Save;
 import gov.nist.forecast.fhir.exceptions.ForecastException;

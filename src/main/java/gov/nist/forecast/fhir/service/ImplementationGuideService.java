@@ -1,7 +1,8 @@
 package gov.nist.forecast.fhir.service;
 
-import fhir.FhirFactory;
-import fhir.ImplementationGuide;
+import org.hl7.fhir.FhirFactory;
+import org.hl7.fhir.ImplementationGuide;
+
 import fhir.util.FHIRUtil;
 import forecast.util.ForecastUtil;
 

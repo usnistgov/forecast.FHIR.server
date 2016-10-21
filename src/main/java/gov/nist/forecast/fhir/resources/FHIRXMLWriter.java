@@ -10,7 +10,6 @@ import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.ext.MessageBodyWriter;
-import javax.ws.rs.ext.Provider;
 
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EObject;
@@ -18,11 +17,11 @@ import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 import org.eclipse.emf.ecore.xmi.impl.XMLResourceFactoryImpl;
+import org.hl7.fhir.FhirPackage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.w3._1999.xhtml.XhtmlPackage;
 
-import fhir.FhirPackage;
-import xhtml.XhtmlPackage;
 
 // This class is required to get XML serialization done the EMF way.
 // All EMF object are EObjects.

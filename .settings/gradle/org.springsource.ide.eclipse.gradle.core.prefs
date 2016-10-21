@@ -1,5 +1,5 @@
 #org.springsource.ide.eclipse.gradle.core.preferences.GradleProjectPreferences
-#Thu Oct 13 15:48:27 EDT 2016
-build.family.org.gradle.tooling.model.eclipse.HierarchicalEclipseProject=;../fhir.forecast;
+#Fri Oct 21 14:12:41 EDT 2016
+build.family.org.gradle.tooling.model.eclipse.HierarchicalEclipseProject=;../fhir.emf;../fhir.forecast;
 org.springsource.ide.eclipse.gradle.linkedresources=
 org.springsource.ide.eclipse.gradle.rootprojectloc=

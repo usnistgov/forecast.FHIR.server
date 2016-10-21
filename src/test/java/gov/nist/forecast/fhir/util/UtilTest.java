@@ -5,7 +5,7 @@ import static org.junit.Assert.assertNotNull;
 
 import org.junit.Test;
 
-import fhir.String;
+import org.hl7.fhir.String;
 import fhir.util.FHIRUtil;
 
 public class UtilTest {

@@ -8,6 +8,11 @@ import java.io.StringReader;
 import java.io.StringWriter;
 import java.text.ParseException;
 
+import org.hl7.fhir.Element;
+import org.hl7.fhir.Extension;
+import org.hl7.fhir.FhirFactory;
+import org.hl7.fhir.Parameters;
+import org.hl7.fhir.impl.ParametersImpl;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,18 +23,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jayway.restassured.http.ContentType;
 import com.jayway.restassured.response.Response;
 
-import fhir.Element;
-import fhir.Extension;
-import fhir.FhirFactory;
-import fhir.Parameters;
-import fhir.impl.ParametersImpl;
 import fhir.util.FHIRUtil;
 import fhir.util.Save;
 import gov.nist.forecast.fhir.util.ElementMixin;
 import gov.nist.forecast.fhir.util.ExtensionMixin;
-import gov.nist.forecast.fhir.util.TheClassMixin;
-import try_.TheClass;
-import try_.TryFactory;
 
 public class IndexResourceTest {
 
@@ -155,27 +152,15 @@ public class IndexResourceTest {
 	
 //	@Test
 	public void testParametersJSON1() {
-		TheClass tc0 = TryFactory.eINSTANCE.createTheClass();
+
 		Element el0 = FhirFactory.eINSTANCE.createElement();
 		try {
-//			fp = ImmunizationRecommendationServiceTest.createParameters("TCH");
-//			fp = createParameters();
-			tc0.setId("CBATC");
+
 			el0.setId("CBAEL");
 			ObjectMapper mapper = new ObjectMapper();
-			mapper.addMixIn(TheClass.class, TheClassMixin.class);
 			mapper.addMixIn(Element.class, ElementMixin.class);
 			mapper.addMixIn(Extension.class, ExtensionMixin.class);
 //			mapper.registerModule(new EMFModule());
-			
-			StringWriter writertc = new StringWriter();
-			mapper.writeValue(writertc, tc0);
-			log.debug("TheClass=" + writertc.toString());
-			log.debug("TheClass tc0=" + Save.it(tc0, "xxx.xml"));
-			
-			StringReader readertc = new StringReader(writertc.toString());
-	//		TheClass tc1 = mapper.readValue(readertc, TheClass.class);
-	//		log.debug("TheClass tc1=" + Save.it(tc1, "xxx.xml"));
 			
 			StringWriter writerel = new StringWriter();
 			mapper.writeValue(writerel, el0);
@@ -200,8 +185,7 @@ public class IndexResourceTest {
 	}
 	
 	public ParametersImpl createParameters() throws ParseException {
-//		ParametersImpl parameters = (ParametersImpl)FhirFactory.eINSTANCE.createParameters();
-		ParametersImpl parameters = new ParametersImpl();
+		ParametersImpl parameters = (ParametersImpl)FhirFactory.eINSTANCE.createParameters();
 		parameters.setId(FHIRUtil.createId());
 		return parameters;
 	}
