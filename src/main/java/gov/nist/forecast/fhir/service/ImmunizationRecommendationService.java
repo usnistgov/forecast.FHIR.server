@@ -66,7 +66,7 @@ public class ImmunizationRecommendationService {
 		}
 		ParametersParameter ppGender = findParametersParameter(ForecastUtil.FORECAST_PARAMETERs.GENDER.code,
 				parameters);
-		testCase.setPatientSex(ppGender.getValueString().toString());
+		testCase.setPatientSex(ppGender.getValueCode().getValue());
 		List<TestEvent> events = createTestEvents(parameters);
 		testCase.setTestEventList(events);
 		ConnectorInterface connector = null;
@@ -97,8 +97,15 @@ public class ImmunizationRecommendationService {
 	}
 
 	static Patient findPatient(Parameters parameters) {
-		if (parameters.getParameter().size() > 0) {
-			return (Patient) parameters.getParameter().get(0).getResource().getImmunization().getPatient();
+		ParametersParameter parameter = findParametersParameter(ForecastUtil.FORECAST_PARAMETERs.IMMUNIZATIONS.code,
+				parameters);
+
+		if (parameter.getPart().size() > 0) {
+			ParametersParameter part = parameter.getPart().get(0);
+			if (part.getResource().getImmunization().getContained().size() > 0) {
+				return (Patient) parameter.getPart().get(0).getResource().getImmunization().getContained().get(0)
+						.getPatient();
+			}
 		}
 		return null;
 	}

@@ -2,6 +2,8 @@ logging:
   level: ERROR
   loggers:
     gov.nist.forecast.fhir: TRACE
+    fhir.util: TRACE
+    forecast.util: DEBUG
     io.dropwizard: ERROR
     timeZone: UTC
 forecasters:

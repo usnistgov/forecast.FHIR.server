@@ -3,13 +3,8 @@ package gov.nist.forecast.fhir.resources;
 import static com.jayway.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.containsString;
 
-import java.io.IOException;
-import java.io.StringReader;
-import java.io.StringWriter;
 import java.text.ParseException;
 
-import org.hl7.fhir.Element;
-import org.hl7.fhir.Extension;
 import org.hl7.fhir.FhirFactory;
 import org.hl7.fhir.Parameters;
 import org.hl7.fhir.impl.ParametersImpl;
@@ -17,16 +12,12 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.fasterxml.jackson.core.JsonGenerationException;
-import com.fasterxml.jackson.databind.JsonMappingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jayway.restassured.http.ContentType;
 import com.jayway.restassured.response.Response;
 
 import fhir.util.FHIRUtil;
-import fhir.util.Save;
-import gov.nist.forecast.fhir.util.ElementMixin;
-import gov.nist.forecast.fhir.util.ExtensionMixin;
+import fhir.util.Serialize;
+import gov.nist.forecast.fhir.service.ImmunizationRecommendationServiceTest;
 
 public class IndexResourceTest {
 
@@ -130,56 +121,27 @@ public class IndexResourceTest {
 	}
 
 	@Test
-	public void testPatientJSON() {
-		String fp = "{'patient' : 'the pat'}";
-		given().contentType(ContentType.JSON).accept(ContentType.JSON).body(fp).when().post("/forecast/post").then()
-				.statusCode(200);
-	}
-
-	@Test
-	public void testParametersJSON() {
-		Parameters parameters;
+	public void testParametersXML() {
 		try {
-			parameters = createParameters();
-			String xml = Save.it(parameters, "xxx.xml");
-			given().contentType(ContentType.XML).accept(ContentType.XML).body(xml).when()
-			.post("/forecast/ForecastImmunizationRecommendations").then().statusCode(200);
+			Parameters parameters = ImmunizationRecommendationServiceTest.createParameters("TCH");
+			Serialize save = new Serialize();
+			String s = save.it(parameters, "xxx.xml");
+			given().contentType("application/xml").accept("application/xml").body(s).when()
+					.post("/forecast/ImmunizationRecommendations").then().statusCode(200);
 		} catch (ParseException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
 	
-//	@Test
-	public void testParametersJSON1() {
-
-		Element el0 = FhirFactory.eINSTANCE.createElement();
+	@Test
+	public void testParametersJSON() {
 		try {
-
-			el0.setId("CBAEL");
-			ObjectMapper mapper = new ObjectMapper();
-			mapper.addMixIn(Element.class, ElementMixin.class);
-			mapper.addMixIn(Extension.class, ExtensionMixin.class);
-//			mapper.registerModule(new EMFModule());
-			
-			StringWriter writerel = new StringWriter();
-			mapper.writeValue(writerel, el0);
-			log.debug("TheClass=" + writerel.toString());
-			log.debug("TheClass el0=" + Save.it(el0, "xxx.xml"));
-			
-			StringReader readerel = new StringReader(writerel.toString());
-			Element el1 = mapper.readValue(readerel, Element.class);
-			log.debug("TheClass el1=" + Save.it(el1, "xxx.xml"));
-//			given().contentType(ContentType.JSON).accept(ContentType.JSON).body(fp).when()
-//					.post("/forecast/ForecastImmunizationRecommendations").then().statusCode(200);
-		} catch (JsonGenerationException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (JsonMappingException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
+			Parameters parameters = ImmunizationRecommendationServiceTest.createParameters("TCH");
+			Serialize save = new Serialize();
+			String s = save.it(parameters, "xxx.json");
+			given().contentType("application/json").accept("application/json").body(s).when()
+					.post("/forecast/ImmunizationRecommendations").then().statusCode(200);
+		} catch (ParseException e) {
 			e.printStackTrace();
 		}
 	}

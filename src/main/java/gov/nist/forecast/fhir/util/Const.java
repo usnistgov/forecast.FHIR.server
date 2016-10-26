@@ -19,22 +19,22 @@ public abstract class Const {
 		}
 	}
 
-	public static String getMessage(RESPONSE_CODE rc, String s) {
+	public static java.lang.String getMessage(RESPONSE_CODE rc, String s) {
 		switch (rc) {
 		case NOT_FOUND:
 
-			return String.format("Invalid parameter %s. Valid parameters are %s", s, Service.valueList());
+			return java.lang.String.format("Invalid parameter %s. Valid parameters are %s", s, Service.valueList());
 			
 		case SERVER_ERROR:
 			
-			return String.format("Server error");
+			return java.lang.String.format("Server error");
 			
 		default:
 			return null;
 		}
 	}
 
-	public String getLink(RESPONSE_CODE rc) {
+	public java.lang.String getLink(RESPONSE_CODE rc) {
 		switch (rc) {
 		case NOT_FOUND:
 
@@ -45,11 +45,11 @@ public abstract class Const {
 
 	}
 
-	public String getDeveloperMessage(RESPONSE_CODE rc) {
+	public java.lang.String getDeveloperMessage(RESPONSE_CODE rc) {
 		switch (rc) {
 		case NOT_FOUND:
 
-			return String.format("");
+			return java.lang.String.format("");
 		default:
 			return null;
 		}

@@ -23,8 +23,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.tch.fc.model.Service;
 
-import fhir.util.Load;
-import fhir.util.Save;
+import fhir.util.DeSerialize;
+import fhir.util.Serialize;
 import gov.nist.forecast.fhir.exceptions.ForecastException;
 import gov.nist.forecast.fhir.exceptions.ForecastExceptionMapper;
 import gov.nist.forecast.fhir.service.ConformanceService;
@@ -34,7 +34,6 @@ import gov.nist.forecast.fhir.util.Const;
 import gov.nist.forecast.fhir.util.Const.RESPONSE_CODE;
 
 @Path("forecast")
-@Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
 public class IndexResource {
 
 	private static Logger log = LoggerFactory.getLogger(IndexResource.class);
@@ -93,14 +92,14 @@ public class IndexResource {
 	}
 	
 	@POST
-	@Path("/ForecastImmunizationRecommendations")
+	@Path("/ImmunizationRecommendations")
 	@Consumes({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
 	@Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
 	public Response getImmunizationRecommendations(Parameters parameters) {
 		log.trace("getImmunizationRecommendations==>" + parameters);
-		log.trace("getImmunizationRecommendations==>" + Save.it(parameters, "xxx.xml"));
 		ParametersParameter pp = ImmunizationRecommendationService.findParametersParameter("serviceType", parameters);
-		String serviceType = pp.getValueString().toString();
+		java.lang.String serviceType = pp.getValueString().getValue();
+		log.debug("serviceType=" + serviceType + " java.lang.String=" + (serviceType instanceof java.lang.String));
 		Service service = Service.getService(serviceType);
 		if (service == null) {
 			return fExMapper.toResponse(new ForecastException(Const.RESPONSE_CODE.NOT_FOUND.responseCode,
@@ -109,7 +108,7 @@ public class IndexResource {
 		Bundle bundle = ImmunizationRecommendationService.getImmunizationRecommendation(parameters);
 
 		log.trace("<==getImmunizationRecommendations");
-		return Response.status(RESPONSE_CODE.OK.responseCode).entity(parameters).build();
+		return Response.status(RESPONSE_CODE.OK.responseCode).entity(bundle).build();
 	}
 
 	@GET
@@ -119,7 +118,8 @@ public class IndexResource {
 		log.trace("getProfile==>" + name);
 		String fileName = "/" + name + ".structuredefinition.xml";
 		log.trace("<==getProfile " + fileName);
-		return (StructureDefinition) Load.it(fileName);
+		DeSerialize load = new DeSerialize();
+		return (StructureDefinition) load.it(fileName);
 	}
 
 }
