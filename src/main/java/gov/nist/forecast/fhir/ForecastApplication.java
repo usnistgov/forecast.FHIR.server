@@ -1,7 +1,6 @@
 package gov.nist.forecast.fhir;
 
 import org.eclipse.emf.ecore.EObject;
-import org.hl7.fhir.Parameters;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -34,7 +33,7 @@ public class ForecastApplication extends Application<ForecastConfiguration> {
 		environment.jersey().register(
 				new IndexResource(configuration.getForcasters()));
 		// We have to register our XML serializer and deserializer with jersey. 
-		environment.jersey().getResourceConfig().register(new EMF2XMLReader<Parameters>());		
+		environment.jersey().getResourceConfig().register(new EMF2XMLReader<EObject>());		
 		environment.jersey().getResourceConfig().register(new EMF2XMLWriter<EObject>());		
 		environment.jersey().getResourceConfig().register(new EMF2JSONReader<EObject>());		
 		environment.jersey().getResourceConfig().register(new EMF2JSONWriter<EObject>());	

@@ -18,13 +18,42 @@ import org.hl7.fhir.Patient;
 import org.hl7.fhir.ResourceContainer;
 import org.hl7.fhir.impl.ParametersImpl;
 import org.junit.Test;
+import org.tch.fc.ConnectFactory;
+import org.tch.fc.TCHConnector;
+import org.tch.fc.model.ForecastActual;
+import org.tch.fc.model.Software;
+import org.tch.fc.model.SoftwareResult;
+import org.tch.fc.model.TestCase;
 import org.tch.fc.model.TestEvent;
+import org.tch.fc.model.VaccineGroup;
 
 import fhir.util.FHIRUtil;
 import fhir.util.Serialize;
 import forecast.util.ForecastUtil;
+import gov.nist.forecast.fhir.resources.JSONReaderWriter;
+import gov.nist.forecast.fhir.resources.XMLReaderWriter;
 
 public class ImmunizationRecommendationServiceTest {
+	
+	@Test
+	public void testQuery() {
+		Parameters parameters = null;
+		try {
+			parameters = createParameters("TCH");
+			Software software = ImmunizationRecommendationService.createSoftware(parameters);
+			TestCase testCase = ImmunizationRecommendationService.createTestCase(parameters);
+			TCHConnector connector = (TCHConnector)ConnectFactory.createConnecter(software, VaccineGroup.getForecastItemList());
+			String s = TCHConnector.createQueryString(testCase, software, "text");
+//			http://tchforecasttester.org/fv/forecast?evalDate=20130513&evalSchedule=&resultFormat=text&patientDob=20120902&patientSex=F&vaccineDate1=20121015&vaccineCvx1=49&vaccineMvx1=&vaccineDate2=20120902&vaccineCvx2=08&vaccineMvx2=&vaccineDate3=20121015&vaccineCvx3=133&vaccineMvx3=&vaccineDate4=20121015&vaccineCvx4=116&vaccineMvx4=&vaccineDate5=20121015&vaccineCvx5=110&vaccineMvx5=&assumeDtapSeriesCompleteAtAge=18+years&fluSeasonEnd=6+months&dueUseEarly=true&fluSeasonStart=0+months&fluSeasonOverdue=4+months&fluSeasonDue=2+months
+//			                                        ?evalDate=20161027&scheduleName=&resultFormat=text&patientDob=20110101&patientSex=MALE&vaccineDate1=20161027&vaccineCvx1=08&vaccineMvx1=&vaccineDate2=20161027&vaccineCvx2=53&vaccineMvx2=
+			java.util.List<ForecastActual> forecastActualList = connector.queryForForecast(testCase, new SoftwareResult());
+			assertNotNull(forecastActualList);
+		} catch (ParseException e) {
+			e.printStackTrace();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
 
 	@Test
 	public void testFindPatient() {
@@ -48,6 +77,9 @@ public class ImmunizationRecommendationServiceTest {
 		}
 		Bundle bundle = ImmunizationRecommendationService.getImmunizationRecommendation(params);
 		assertNotNull(bundle);
+		Serialize save = new Serialize();
+		String json = save.it(bundle, "xxx." + JSONReaderWriter.EXTENSION);
+		String xml = save.it(bundle, "xxx." + XMLReaderWriter.EXTENSION);
 	}
 
 	@Test

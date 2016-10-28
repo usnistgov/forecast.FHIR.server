@@ -82,6 +82,10 @@ compile group: 'javax.servlet', name: 'javax.servlet-api', version: '3.1.0'
 	compile 'org.eclipse.emf:org.eclipse.emf.ecore:2.12.0'
 	compile 'org.eclipse.emf:org.eclipse.emf.ecore.xmi:2.12.0'
 	
+	compile 'org.eclipse.emf:org.eclipse.emf.common.source:2.12.0'
+	compile 'org.eclipse.emf:org.eclipse.emf.ecore.source:2.12.0'
+	compile 'org.eclipse.emf:org.eclipse.emf.ecore.xmi.source:2.12.0'
+	
 	compile 'org.tch.fc:ForecastConnector:3.09.01'
 
 	compile 'javassist:javassist:3.12.1.GA'

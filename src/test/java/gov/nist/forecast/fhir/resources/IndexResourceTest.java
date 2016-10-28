@@ -23,6 +23,12 @@ public class IndexResourceTest {
 
 	private static Logger log = LoggerFactory.getLogger(IndexResourceTest.class);
 
+	@Test
+	public void testURLs() {
+		String n = "http://tchforecasttester.org/fv/forecast?evalDate=20130513&evalSchedule=&resultFormat=text&patientDob=20120902&patientSex=F&vaccineDate1=20121015&vaccineCvx1=49&vaccineMvx1=&vaccineDate2=20120902&vaccineCvx2=08&vaccineMvx2=&vaccineDate3=20121015&vaccineCvx3=133&vaccineMvx3=&vaccineDate4=20121015&vaccineCvx4=116&vaccineMvx4=&vaccineDate5=20121015&vaccineCvx5=110&vaccineMvx5=&assumeDtapSeriesCompleteAtAge=18+years&fluSeasonEnd=6+months&dueUseEarly=true&fluSeasonStart=0+months&fluSeasonOverdue=4+months&fluSeasonDue=2+months";
+		given().when().get(n).then().statusCode(200);
+	}
+
 	// @Test
 	public void testJSON() {
 		given().accept(ContentType.JSON).when().get("/forecast").then().body(containsString("healthy"));
@@ -132,7 +138,7 @@ public class IndexResourceTest {
 			e.printStackTrace();
 		}
 	}
-	
+
 	@Test
 	public void testParametersJSON() {
 		try {
@@ -145,9 +151,9 @@ public class IndexResourceTest {
 			e.printStackTrace();
 		}
 	}
-	
+
 	public ParametersImpl createParameters() throws ParseException {
-		ParametersImpl parameters = (ParametersImpl)FhirFactory.eINSTANCE.createParameters();
+		ParametersImpl parameters = (ParametersImpl) FhirFactory.eINSTANCE.createParameters();
 		parameters.setId(FHIRUtil.createId());
 		return parameters;
 	}

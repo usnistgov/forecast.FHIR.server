@@ -20,6 +20,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.tch.fc.ConnectFactory;
 import org.tch.fc.ConnectorInterface;
+import org.tch.fc.model.EvaluationActual;
 import org.tch.fc.model.ForecastActual;
 import org.tch.fc.model.Service;
 import org.tch.fc.model.Software;
@@ -42,44 +43,18 @@ public class ImmunizationRecommendationService {
 		type.setValue(BundleTypeList.SEARCHSET);
 		bundle.setType(type);
 
-		Software software = new Software();
-		ParametersParameter ppServiceUrl = findParametersParameter(ForecastUtil.FORECAST_PARAMETERs.SERVICE_URL.code,
-				parameters);
-		software.setServiceUrl(ppServiceUrl.getValueString().getValue());
-		ParametersParameter ppServiceType = findParametersParameter(ForecastUtil.FORECAST_PARAMETERs.SERVICE_TYPE.code,
-				parameters);
-		Service service = Service.getService(ppServiceType.getValueString().getValue());
-		software.setService(service);
+		Software software = createSoftware(parameters);
 
-		TestCase testCase = new TestCase();
+		TestCase testCase = createTestCase(parameters);
 		Patient patient = findPatient(parameters);
 		try {
-			ParametersParameter ppAssessment = findParametersParameter(
-					ForecastUtil.FORECAST_PARAMETERs.ASSESMENT_DATE.code, parameters);
-			testCase.setEvalDate(FHIRUtil.convert(ppAssessment.getValueDate()));
-			ParametersParameter ppBirthDate = findParametersParameter(ForecastUtil.FORECAST_PARAMETERs.BIRTH_DATE.code,
-					parameters);
-			testCase.setPatientDob(FHIRUtil.convert(ppBirthDate.getValueDate()));
-		} catch (ParseException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
-		ParametersParameter ppGender = findParametersParameter(ForecastUtil.FORECAST_PARAMETERs.GENDER.code,
-				parameters);
-		testCase.setPatientSex(ppGender.getValueCode().getValue());
-		List<TestEvent> events = createTestEvents(parameters);
-		testCase.setTestEventList(events);
-		ConnectorInterface connector = null;
-		try {
-			connector = ConnectFactory.createConnecter(software, VaccineGroup.getForecastItemList());
-			java.util.List<ForecastActual> forecastActualList = connector.queryForForecast(testCase,
-					new SoftwareResult());
+			java.util.List<ForecastActual> forecastActualList = getForecasts(software, testCase);
 			log.trace("forecastActualList=" + forecastActualList.size());
 			for (ForecastActual forecastActual : forecastActualList) {
 				log.trace(ForecastUtil.forecastToString(forecastActual));
-				log.trace(ForecastUtil.testEventsToString(events));
+				log.trace(ForecastUtil.testEventsToString(testCase.getTestEventList()));
 				ImmunizationRecommendation recommendation = ForecastUtil
-						.createForecastImmunizationRecommendation(forecastActual, patient, events);
+						.createForecastImmunizationRecommendation(forecastActual, patient, testCase.getTestEventList());
 				BundleEntry entry = FhirFactory.eINSTANCE.createBundleEntry();
 				entry.setId(recommendation.getIdentifier().get(0).toString());
 				entry.setFullUrl(recommendation.getImplicitRules());
@@ -88,12 +63,61 @@ public class ImmunizationRecommendationService {
 				entry.setResource(container);
 				bundle.getEntry().add(entry);
 			}
+			// for(TestEvent event : events) {
+			// for(EvaluationActual eval : event.getEvaluationActualList()) {
+			// Immunization imm = FHIRUtil.cre
+			// eval
+			// }
+			// }
 
 		} catch (Exception e) {
 			log.error("", e);
 		}
 
 		return bundle;
+	}
+
+	static java.util.List<ForecastActual> getForecasts(Software software, TestCase testCase) {
+		java.util.List<ForecastActual> forecastActualList = null;
+		try {
+			ConnectorInterface connector = ConnectFactory.createConnecter(software, VaccineGroup.getForecastItemList());
+			forecastActualList = connector.queryForForecast(testCase, new SoftwareResult());
+		} catch (Exception e) {
+			log.error("", e);
+		}
+		return forecastActualList;
+	}
+
+	static Software createSoftware(Parameters parameters) {
+		Software software = new Software();
+		ParametersParameter ppServiceUrl = findParametersParameter(ForecastUtil.FORECAST_PARAMETERs.SERVICE_URL.code,
+				parameters);
+		software.setServiceUrl(ppServiceUrl.getValueString().getValue());
+		ParametersParameter ppServiceType = findParametersParameter(ForecastUtil.FORECAST_PARAMETERs.SERVICE_TYPE.code,
+				parameters);
+		Service service = Service.getService(ppServiceType.getValueString().getValue());
+		software.setService(service);
+		return software;
+	}
+
+	static TestCase createTestCase(Parameters parameters) {
+		TestCase testCase = new TestCase();
+		try {
+			ParametersParameter ppAssessment = findParametersParameter(
+					ForecastUtil.FORECAST_PARAMETERs.ASSESMENT_DATE.code, parameters);
+			testCase.setEvalDate(FHIRUtil.convert(ppAssessment.getValueDate()));
+			ParametersParameter ppBirthDate = findParametersParameter(ForecastUtil.FORECAST_PARAMETERs.BIRTH_DATE.code,
+					parameters);
+			testCase.setPatientDob(FHIRUtil.convert(ppBirthDate.getValueDate()));
+		} catch (ParseException e1) {
+			e1.printStackTrace();
+		}
+		ParametersParameter ppGender = findParametersParameter(ForecastUtil.FORECAST_PARAMETERs.GENDER.code,
+				parameters);
+		testCase.setPatientSex(ppGender.getValueCode().getValue().substring(0, 1));
+		List<TestEvent> events = createTestEvents(parameters);
+		testCase.setTestEventList(events);
+		return testCase;
 	}
 
 	static Patient findPatient(Parameters parameters) {
