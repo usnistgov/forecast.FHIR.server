@@ -23,6 +23,8 @@ public class ForecastConfiguration extends Configuration {
 		return forecasters;
 	}
 
+	// This property corresponds to an entry in forecaster.yml.  
+	// Here we are loading a map of forcaster servers.
 	@JsonProperty("forecasters")
 	public void setForcasters(Map<String, String> forecasters) {
 		log.trace("setForcasters==>");

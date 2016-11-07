@@ -12,6 +12,7 @@ import org.eclipse.emf.ecore.EObject;
 public class EMF2XMLWriter<T extends EObject> extends AbstractEMFWriter<T> implements XMLReaderWriter {
 
 	public EMF2XMLWriter() {
-		super(EXTENSION);
+		super(_URI);
+		log.trace("EMF2XMLWriter==>" + _URI);
 	}
 }

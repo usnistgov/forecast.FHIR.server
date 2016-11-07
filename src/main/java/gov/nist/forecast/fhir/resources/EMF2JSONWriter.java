@@ -12,6 +12,7 @@ import org.eclipse.emf.ecore.EObject;
 public class EMF2JSONWriter<T extends EObject> extends AbstractEMFWriter<T> implements JSONReaderWriter {
 
 	public EMF2JSONWriter() {
-		super(EXTENSION);
+		super(_URI);
+		log.trace("EMF2JSONWriter==>" + _URI);
 	}
 }

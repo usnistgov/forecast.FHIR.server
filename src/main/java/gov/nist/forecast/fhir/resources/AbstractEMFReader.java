@@ -20,18 +20,15 @@ public abstract class AbstractEMFReader<T extends EObject> implements MessageBod
 
 	Logger log = LoggerFactory.getLogger(AbstractEMFReader.class);
 
-	public final String eXTENSION;
+	public final String sURI;
 
-	public AbstractEMFReader(String eXTENSION) {
+	public AbstractEMFReader(String sURI) {
 		super();
-		this.eXTENSION = eXTENSION;
+		this.sURI = sURI;
 	}
 
 	@Override
 	public boolean isReadable(Class<?> clazz, Type type, Annotation[] ann, MediaType media) {
-		log.info("clazz=" + clazz);
-		log.info("type=" + type);
-		log.info("media=" + media);
 		return true;
 	}
 
@@ -40,9 +37,9 @@ public abstract class AbstractEMFReader<T extends EObject> implements MessageBod
 	public T readFrom(Class<T> clazz, Type arg1, Annotation[] ann, MediaType arg3, MultivaluedMap<String, String> map,
 			InputStream stream) throws IOException, WebApplicationException {
 		log.trace("readFrom==>" + this);
-		log.trace("it==> stream="  + stream + " eXTENSION=" + eXTENSION);
+		log.trace("it==> stream="  + stream + " sURI=" + sURI);
 		DeSerialize load = new DeSerialize();
-		EObject eObject = load.it(stream, eXTENSION);
+		EObject eObject = load.it(stream, sURI);
 		return (T) eObject;
 	}
 }

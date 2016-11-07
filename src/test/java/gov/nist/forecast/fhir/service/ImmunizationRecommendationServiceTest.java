@@ -78,8 +78,8 @@ public class ImmunizationRecommendationServiceTest {
 		Bundle bundle = ImmunizationRecommendationService.getImmunizationRecommendation(params);
 		assertNotNull(bundle);
 		Serialize save = new Serialize();
-		String json = save.it(bundle, "xxx." + JSONReaderWriter.EXTENSION);
-		String xml = save.it(bundle, "xxx." + XMLReaderWriter.EXTENSION);
+		String json = save.it(bundle, JSONReaderWriter._URI);
+		String xml = save.it(bundle, XMLReaderWriter._URI);
 	}
 
 	@Test

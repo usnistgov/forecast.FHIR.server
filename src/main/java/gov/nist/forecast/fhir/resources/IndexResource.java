@@ -18,18 +18,18 @@ import org.hl7.fhir.Conformance;
 import org.hl7.fhir.ImplementationGuide;
 import org.hl7.fhir.Parameters;
 import org.hl7.fhir.ParametersParameter;
+import org.hl7.fhir.Reference;
 import org.hl7.fhir.StructureDefinition;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.tch.fc.model.Service;
 
-import fhir.util.DeSerialize;
-import fhir.util.Serialize;
 import gov.nist.forecast.fhir.exceptions.ForecastException;
 import gov.nist.forecast.fhir.exceptions.ForecastExceptionMapper;
 import gov.nist.forecast.fhir.service.ConformanceService;
 import gov.nist.forecast.fhir.service.ImmunizationRecommendationService;
 import gov.nist.forecast.fhir.service.ImplementationGuideService;
+import gov.nist.forecast.fhir.service.ProfileService;
 import gov.nist.forecast.fhir.util.Const;
 import gov.nist.forecast.fhir.util.Const.RESPONSE_CODE;
 
@@ -56,7 +56,8 @@ public class IndexResource {
 		log.trace("start==>");
 	}
 
-	// We have this to determine if anything is even working.
+	// We have this to determine if anything is even working. 
+	// A response of healty indicates minimal functionality.
 	@GET
 	@Produces({ MediaType.APPLICATION_JSON })
 	public String health() {
@@ -67,28 +68,20 @@ public class IndexResource {
 	@GET
 	@Path("/ImplementationGuide")
 	@Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
-	public ImplementationGuide getImplementationGuide(@HeaderParam("content-type") String contentType) {
+	public ImplementationGuide getImplementationGuide() {
 		return ImplementationGuideService.getImplementationGuide();
 	}
 
+	// Conformance contains a collection of references to the profiles supported.
+	// Use these to get a specific profile.
 	@GET
 	@Path("/Conformance")
 	@Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
-	public Conformance getConformance(@HeaderParam("content-type") String contentType) {
+	public Conformance getConformance() {
 		log.trace("Conformance==>");
-		log.debug("contentType=" + contentType);
-		Conformance conformance = ConformanceService.getConformance();
+			Conformance conformance = ConformanceService.getConformance();
 		log.trace("<==Conformance");
 		return conformance;
-	}
-	
-	@POST
-	@Path("/post")
-	@Consumes(MediaType.APPLICATION_JSON)
-	public void post(String patient) {
-		log.debug("post==>");
-		log.debug(patient);
-		log.debug("<==post");
 	}
 	
 	@POST
@@ -111,15 +104,13 @@ public class IndexResource {
 		return Response.status(RESPONSE_CODE.OK.responseCode).entity(bundle).build();
 	}
 
-	@GET
-	@Path("/Profile/{name}")
+	@POST
+	@Path("/Profile")
+	@Consumes({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
 	@Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
-	public StructureDefinition getProfile(@PathParam("name") String name) {
-		log.trace("getProfile==>" + name);
-		String fileName = "/" + name + ".structuredefinition.xml";
-		log.trace("<==getProfile " + fileName);
-		DeSerialize load = new DeSerialize();
-		return (StructureDefinition) load.it(fileName);
+	public Response getProfile(Reference reference) {
+		StructureDefinition profile = ProfileService.getProfile(reference);
+		return Response.status(RESPONSE_CODE.OK.responseCode).entity(profile).build();
 	}
 
 }

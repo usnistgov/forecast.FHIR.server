@@ -18,7 +18,7 @@ public class EMF2JSONReader<T extends EObject> extends AbstractEMFReader<T> impl
 			.getLogger(ForecastApplication.class);
 
 	public EMF2JSONReader() {
-		super(EXTENSION);
-		log.trace("EMF2JSONReader==>" + EXTENSION);
+		super(_URI);
+		log.trace("EMF2JSONReader==>" + _URI);
 	}	
 }

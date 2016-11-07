@@ -17,7 +17,7 @@ public class EMF2XMLReader<T extends EObject> extends AbstractEMFReader<T> imple
 			.getLogger(ForecastApplication.class);
 
 	public EMF2XMLReader() {
-		super(EXTENSION);
-		log.trace("EMF2XMLReader==>" + EXTENSION);
+		super(_URI);
+		log.trace("EMF2XMLReader==>" + _URI);
 	}	
 }

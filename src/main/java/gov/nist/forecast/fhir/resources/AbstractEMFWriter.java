@@ -19,11 +19,11 @@ public abstract class AbstractEMFWriter<T extends EObject> implements MessageBod
 	
 	Logger log = LoggerFactory.getLogger(AbstractEMFWriter.class);
 
-	public final String eXTENSION;
+	public final String sURI;
 
-	public AbstractEMFWriter(String eXTENSION) {
+	public AbstractEMFWriter(String sURI) {
 		super();
-		this.eXTENSION = eXTENSION;
+		this.sURI = sURI;
 	}
 
 	@Override
@@ -42,6 +42,6 @@ public abstract class AbstractEMFWriter<T extends EObject> implements MessageBod
 			throws IOException, WebApplicationException {
 		log.trace("writeTo==>");
 		Serialize save = new Serialize();
-		save.it(eObject, eXTENSION, stream);
+		save.it(eObject, sURI, stream);
 	}
 }

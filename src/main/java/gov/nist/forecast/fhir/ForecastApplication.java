@@ -32,7 +32,8 @@ public class ForecastApplication extends Application<ForecastConfiguration> {
 				
 		environment.jersey().register(
 				new IndexResource(configuration.getForcasters()));
-		// We have to register our XML serializer and deserializer with jersey. 
+		// We have to register with jersey, our XML our JSON readers and writers 
+		// These are required to serialize and deserialize the FHIR resources.
 		environment.jersey().getResourceConfig().register(new EMF2XMLReader<EObject>());		
 		environment.jersey().getResourceConfig().register(new EMF2XMLWriter<EObject>());		
 		environment.jersey().getResourceConfig().register(new EMF2JSONReader<EObject>());		
@@ -46,6 +47,7 @@ public class ForecastApplication extends Application<ForecastConfiguration> {
 		log.trace("<==run");
 	}
 
+	// Starts the server
 	public static void main(String[] args) throws Exception {
 		log.trace("main==>");
 		ForecastApplication app = new ForecastApplication();
